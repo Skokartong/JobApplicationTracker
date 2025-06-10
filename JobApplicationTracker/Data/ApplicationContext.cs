@@ -1,9 +1,10 @@
 ﻿using JobApplicationTracker.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace JobApplicationTracker.Data
 {
-    public class ApplicationContext:DbContext
+    public class ApplicationContext:IdentityDbContext
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options):base(options)
         {        
