@@ -100,8 +100,42 @@ namespace JobApplicationTracker.Controllers
             if (id != application.Id)
                 return BadRequest();
 
+            var titleInput = Request.Form["JobTitle.Title"].ToString().Trim();
+            var categoryInput = Request.Form["JobCategory.Category"].ToString().Trim();
+
+            var existingTitle = await _context.JobTitles
+                .FirstOrDefaultAsync(t => t.Title.ToLower() == titleInput.ToLower());
+
+            if (existingTitle == null)
+            {
+                var newTitle = new JobTitle { Title = titleInput };
+                _context.JobTitles.Add(newTitle);
+                await _context.SaveChangesAsync();
+                application.TitleId = newTitle.Id;
+            }
+            else
+            {
+                application.TitleId = existingTitle.Id;
+            }
+
+            var existingCategory = await _context.JobCategories
+                .FirstOrDefaultAsync(c => c.Category.ToLower() == categoryInput.ToLower());
+
+            if (existingCategory == null)
+            {
+                var newCategory = new JobCategory { Category = categoryInput };
+                _context.JobCategories.Add(newCategory);
+                await _context.SaveChangesAsync();
+                application.CategoryId = newCategory.Id;
+            }
+            else
+            {
+                application.CategoryId = existingCategory.Id;
+            }
+
             if (ModelState.IsValid)
             {
+                application.AppliedDate = DateTime.Now;
                 _context.Update(application);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
