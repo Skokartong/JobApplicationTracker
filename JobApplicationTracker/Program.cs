@@ -15,10 +15,7 @@ namespace JobApplicationTracker
             builder.Services.AddRazorPages();
 
             // EF
-            builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-            // IDENTITY
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationContext>();
+            builder.Services.AddDbContext<JobContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
 
@@ -38,8 +35,7 @@ namespace JobApplicationTracker
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
-            app.MapRazorPages();
+                pattern: "{controller=Job}/{action=Home}");
 
             app.Run();
         }

@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@model JobApplicationTracker.Models.JobApplication
+
+<div class="container mt-5 h-90">
+	<form asp-action="Add" method="post">
+		<div class="form-group">
+			<label asp-for="JobTitle.Title">Title</label>
+			<input name="JobTitle.Title" list="titles" class="form-control"/>
+			<datalist id="titles">
+				@foreach(var title in @ViewBag.Titles as List<JobTitle>)
+				{
+					<option value="@title.Title"></option>
+				}
+			</datalist>
+		</div>
+
+		<div class="form-group">
+			<label asp-for="JobCategory.Category">Category</label>
+			<input name="JobCategory.Category" list="categories" class="form-control"/>
+			<datalist id="categories">
+				@foreach(var category in ViewBag.Categories as List<JobCategory>)
+				{
+					<option value="@category.Category"></option>
+				}
+			</datalist>
+		</div>
+
+		<div class="form-group">
+			<label asp-for="Status">Status</label>
+			@Html.DropDownListFor(model => model.Status, (List<SelectListItem>)ViewBag.StatusList, "Choose status", new { @class = "form-control" })
+		</div>
+
+		<div class="form-group">
+			<label asp-for="Type">Employment Type</label>
+			@Html.DropDownListFor(model => model.Type, (List<SelectListItem>)ViewBag.TypeList, "Choose type", new { @class = "form-control" })
+		</div>
+
+		<div class="form-group">
+			<label asp-for="Level">Level</label>
+			@Html.DropDownListFor(model => model.Level, (List<SelectListItem>)ViewBag.LevelList, "Choose level", new { @class = "form-control" })
+		</div>
+
+		<div class="form-group">
+			<label asp-for="Company">Company</label>
+			<input asp-for="Company" class="form-control" />
+		</div>
+
+		<button type="submit" class="btn-custom mt-3">Add job</button>
+	</form>
+</div>
