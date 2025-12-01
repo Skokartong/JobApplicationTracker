@@ -2,6 +2,7 @@
 
 <div class="container mt-5 h-90">
 	<form asp-action="Update" method="post">
+	    <input type="hidden" asp-for="Id" />
 		<div class="form-group">
 			<label asp-for="JobTitle.Title">Title</label>
 			<input name="JobTitle.Title" list="titles" class="form-control" />
@@ -44,6 +45,8 @@
 			<input asp-for="Company" class="form-control" />
 		</div>
 
-		<button type="submit" class="btn btn-primary mt-3">Update</button>
+		<button type="submit" class="btn-custom mt-3 rounded-pill">Update</button>
+		<a asp-action="Index" class="btn-custom mt-3 rounded-pill">Go back</a>
+
 	</form>
 </div>
