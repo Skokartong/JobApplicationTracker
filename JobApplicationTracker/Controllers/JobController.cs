@@ -78,7 +78,6 @@ namespace JobApplicationTracker.Controllers
 
             if (ModelState.IsValid)
             {
-                Job.AppliedDate = DateTime.Now;
                 _context.JobApplications.Add(Job);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -140,7 +139,6 @@ namespace JobApplicationTracker.Controllers
 
             if (ModelState.IsValid)
             {
-                Job.AppliedDate = DateTime.Now;
                 _context.Update(Job);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

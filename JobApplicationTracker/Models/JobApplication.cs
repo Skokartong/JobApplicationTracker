@@ -12,7 +12,7 @@ namespace JobApplicationTracker.Models
         public EmploymentType Type { get; set; }
         public JobLevel Level { get; set; }
         public ApplicationStatus Status { get; set; }
-        public DateTime AppliedDate { get; set; }
+        public DateTime AppliedDate { get; set; } = DateTime.UtcNow;
         public string Company { get; set; }
     }
 }
