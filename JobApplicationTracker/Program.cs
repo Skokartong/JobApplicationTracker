@@ -1,5 +1,4 @@
 using JobApplicationTracker.Data;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobApplicationTracker
@@ -15,7 +14,7 @@ namespace JobApplicationTracker
             builder.Services.AddRazorPages();
 
             // EF
-            builder.Services.AddDbContext<JobContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddDbContext<JobContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
 
