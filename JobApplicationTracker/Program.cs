@@ -34,7 +34,7 @@ namespace JobApplicationTracker
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Job}/{action=Index}");
+                pattern: "{controller=Job}/{action=Home}");
 
             app.Run();
         }
