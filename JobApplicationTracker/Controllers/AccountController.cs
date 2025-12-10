@@ -7,11 +7,11 @@ namespace JobApplicationTracker.Controllers
 {
     public class AccountController : Controller
     {
-        public IActionResult Login(string returnUrl = "/Job/Index")
+        public IActionResult Login()
         {
             var authenticationProperties = new AuthenticationProperties
             {
-                RedirectUri = returnUrl
+                RedirectUri = "/Job/Index"
             };
 
             return Challenge(authenticationProperties, "Auth0");
