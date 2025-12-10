@@ -5,6 +5,8 @@ namespace JobApplicationTracker.Models
     public class JobApplication
     {
         public int Id { get; set; }
+        // UserId to map user's claim (sub) to application when logged in
+        public string UserId { get; set; }
         public int CategoryId { get; set; }
         public JobCategory JobCategory { get; set; }
         public int TitleId { get; set; }

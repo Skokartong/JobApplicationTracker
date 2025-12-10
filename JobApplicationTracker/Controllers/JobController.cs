@@ -1,6 +1,7 @@
 ﻿using JobApplicationTracker.Data;
 using JobApplicationTracker.Models;
 using JobApplicationTracker.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace JobApplicationTracker.Controllers
             return View();
         }
 
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var Jobs = await _context.JobApplications
@@ -33,12 +35,14 @@ namespace JobApplicationTracker.Controllers
             return View(Jobs);
         }
 
+        [Authorize]
         public IActionResult Add()
         {
             LoadDropdowns();
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(JobApplication Job)
@@ -87,6 +91,7 @@ namespace JobApplicationTracker.Controllers
             return View(Job);
         }
 
+        [Authorize]
         public async Task<IActionResult> Update(int id)
         {
             var Job = await _context.JobApplications.FindAsync(id);
@@ -97,6 +102,7 @@ namespace JobApplicationTracker.Controllers
             return View(Job);
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(int id, JobApplication Job)
@@ -148,6 +154,7 @@ namespace JobApplicationTracker.Controllers
             return View(Job);
         }
 
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             var Job = await _context.JobApplications.FindAsync(id);
@@ -157,6 +164,7 @@ namespace JobApplicationTracker.Controllers
             return View(Job);
         }
 
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -186,6 +194,7 @@ namespace JobApplicationTracker.Controllers
             return View();
         }
 
+        [Authorize]
         private void LoadDropdowns()
         {
             ViewBag.Categories = _context.JobCategories.ToList();
