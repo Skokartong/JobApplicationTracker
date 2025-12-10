@@ -1,22 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Auth0.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JobApplicationTracker.Controllers
 {
     public class AccountController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Login(string returnUrl = "/Job/Index")
         {
-            return View();
+            var authenticationProperties = new AuthenticationProperties
+            {
+                RedirectUri = returnUrl
+            };
+
+            return Challenge(authenticationProperties, "Auth0");
         }
 
-        public IActionResult Privacy()
+        public IActionResult Logout()
         {
-            return View();
-        }
+            var authenticationProperties = new AuthenticationProperties
+            {
+                RedirectUri = "/"
+            };
 
-        public IActionResult Error()
-        {
-            return View();
+            return SignOut(authenticationProperties, "Auth0", CookieAuthenticationDefaults.AuthenticationScheme);
         }
     }
 }
