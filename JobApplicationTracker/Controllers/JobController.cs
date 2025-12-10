@@ -27,9 +27,12 @@ namespace JobApplicationTracker.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
+            var userId = User.FindFirst("sub")?.Value;
+
             var Jobs = await _context.JobApplications
                 .Include(j => j.JobCategory)
                 .Include(j => j.JobTitle)
+                .Where(j => j.UserId == userId)
                 .ToListAsync();
 
             return View(Jobs);
@@ -47,6 +50,9 @@ namespace JobApplicationTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(JobApplication Job)
         {
+            var userId = User.FindFirst("sub")?.Value;
+            Job.UserId = userId;
+
             var titleInput = Request.Form["JobTitle.Title"].ToString().Trim();
             var categoryInput = Request.Form["JobCategory.Category"].ToString().Trim();
 
@@ -94,8 +100,10 @@ namespace JobApplicationTracker.Controllers
         [Authorize]
         public async Task<IActionResult> Update(int id)
         {
+            var userId = User.FindFirst("sub")?.Value;
             var Job = await _context.JobApplications.FindAsync(id);
-            if (Job == null)
+
+            if (Job == null || Job.UserId != userId)
                 return NotFound();
 
             LoadDropdowns();
@@ -107,8 +115,13 @@ namespace JobApplicationTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(int id, JobApplication Job)
         {
-            if (id != Job.Id)
+            var userId = User.FindFirst("sub")?.Value;
+            var existingJob = await _context.JobApplications.AsNoTracking().FirstOrDefaultAsync(j => j.Id == id);
+
+            if (existingJob == null || existingJob.UserId != userId)
                 return BadRequest();
+
+            Job.UserId = existingJob.UserId;
 
             var titleInput = Request.Form["JobTitle.Title"].ToString().Trim();
             var categoryInput = Request.Form["JobCategory.Category"].ToString().Trim();
@@ -157,8 +170,10 @@ namespace JobApplicationTracker.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
+            var userId = User.FindFirst("sub")?.Value;
             var Job = await _context.JobApplications.FindAsync(id);
-            if (Job == null)
+
+            if (Job == null || Job.UserId != userId)
                 return NotFound();
 
             return View(Job);
@@ -169,12 +184,15 @@ namespace JobApplicationTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var userId = User.FindFirst("sub")?.Value;
             var Job = await _context.JobApplications.FindAsync(id);
-            if (Job != null)
-            {
-                _context.JobApplications.Remove(Job);
-                await _context.SaveChangesAsync();
-            }
+
+            if (Job == null || Job.UserId != userId)
+                return NotFound();
+
+            _context.JobApplications.Remove(Job);
+            await _context.SaveChangesAsync();
+
 
             return RedirectToAction(nameof(Index));
         }
