@@ -1,4 +1,5 @@
-﻿using JobApplicationTracker.Data;
+﻿using System.Security.Claims;
+using JobApplicationTracker.Data;
 using JobApplicationTracker.Models;
 using JobApplicationTracker.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -27,7 +28,12 @@ namespace JobApplicationTracker.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            var userId = User.FindFirst("sub")?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            foreach (var claim in User.Claims)
+            {
+                System.Console.WriteLine($"{claim.Type}: {claim.Value}");
+            }
 
             var Jobs = await _context.JobApplications
                 .Include(j => j.JobCategory)
@@ -48,10 +54,19 @@ namespace JobApplicationTracker.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(JobApplication Job)
+        public async Task<IActionResult> Add(JobApplication job)
         {
-            var userId = User.FindFirst("sub")?.Value;
-            Job.UserId = userId;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("UserId couldn't be found");
+            }
+
+            job.UserId = userId;
+            await _context.SaveChangesAsync();
+
+            System.Console.WriteLine($"USERID: {userId}");
 
             var titleInput = Request.Form["JobTitle.Title"].ToString().Trim();
             var categoryInput = Request.Form["JobCategory.Category"].ToString().Trim();
@@ -64,11 +79,11 @@ namespace JobApplicationTracker.Controllers
                 var newTitle = new JobTitle { Title = titleInput };
                 _context.JobTitles.Add(newTitle);
                 await _context.SaveChangesAsync();
-                Job.TitleId = newTitle.Id;
+                job.TitleId = newTitle.Id;
             }
             else
             {
-                Job.TitleId = existingTitle.Id;
+                job.TitleId = existingTitle.Id;
             }
 
             var existingCategory = await _context.JobCategories
@@ -79,49 +94,51 @@ namespace JobApplicationTracker.Controllers
                 var newCategory = new JobCategory { Category = categoryInput };
                 _context.JobCategories.Add(newCategory);
                 await _context.SaveChangesAsync();
-                Job.CategoryId = newCategory.Id;
+                job.CategoryId = newCategory.Id;
             }
             else
             {
-                Job.CategoryId = existingCategory.Id;
+                job.CategoryId = existingCategory.Id;
             }
+
+            ModelState.Remove("UserId");
 
             if (ModelState.IsValid)
             {
-                _context.JobApplications.Add(Job);
+                _context.JobApplications.Add(job);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
             LoadDropdowns();
-            return View(Job);
+            return View(job);
         }
 
         [Authorize]
         public async Task<IActionResult> Update(int id)
         {
-            var userId = User.FindFirst("sub")?.Value;
-            var Job = await _context.JobApplications.FindAsync(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var job = await _context.JobApplications.FindAsync(id);
 
-            if (Job == null || Job.UserId != userId)
+            if (job == null || job.UserId != userId)
                 return NotFound();
 
             LoadDropdowns();
-            return View(Job);
+            return View(job);
         }
 
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(int id, JobApplication Job)
+        public async Task<IActionResult> Update(int id, JobApplication job)
         {
-            var userId = User.FindFirst("sub")?.Value;
-            var existingJob = await _context.JobApplications.AsNoTracking().FirstOrDefaultAsync(j => j.Id == id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var existingJob = await _context.JobApplications.FirstOrDefaultAsync(j => j.Id == id && j.UserId == userId);
 
             if (existingJob == null || existingJob.UserId != userId)
                 return BadRequest();
 
-            Job.UserId = existingJob.UserId;
+            job.UserId = existingJob.UserId;
 
             var titleInput = Request.Form["JobTitle.Title"].ToString().Trim();
             var categoryInput = Request.Form["JobCategory.Category"].ToString().Trim();
@@ -134,11 +151,11 @@ namespace JobApplicationTracker.Controllers
                 var newTitle = new JobTitle { Title = titleInput };
                 _context.JobTitles.Add(newTitle);
                 await _context.SaveChangesAsync();
-                Job.TitleId = newTitle.Id;
+                job.TitleId = newTitle.Id;
             }
             else
             {
-                Job.TitleId = existingTitle.Id;
+                job.TitleId = existingTitle.Id;
             }
 
             var existingCategory = await _context.JobCategories
@@ -149,34 +166,34 @@ namespace JobApplicationTracker.Controllers
                 var newCategory = new JobCategory { Category = categoryInput };
                 _context.JobCategories.Add(newCategory);
                 await _context.SaveChangesAsync();
-                Job.CategoryId = newCategory.Id;
+                job.CategoryId = newCategory.Id;
             }
             else
             {
-                Job.CategoryId = existingCategory.Id;
+                job.CategoryId = existingCategory.Id;
             }
 
             if (ModelState.IsValid)
             {
-                _context.Update(Job);
+                _context.Update(job);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
             LoadDropdowns();
-            return View(Job);
+            return View(job);
         }
 
         [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = User.FindFirst("sub")?.Value;
-            var Job = await _context.JobApplications.FindAsync(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var job = await _context.JobApplications.FindAsync(id);
 
-            if (Job == null || Job.UserId != userId)
+            if (job == null || job.UserId != userId)
                 return NotFound();
 
-            return View(Job);
+            return View(job);
         }
 
         [Authorize]
@@ -184,13 +201,13 @@ namespace JobApplicationTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var userId = User.FindFirst("sub")?.Value;
-            var Job = await _context.JobApplications.FindAsync(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var job = await _context.JobApplications.FindAsync(id);
 
-            if (Job == null || Job.UserId != userId)
+            if (job == null || job.UserId != userId)
                 return NotFound();
 
-            _context.JobApplications.Remove(Job);
+            _context.JobApplications.Remove(job);
             await _context.SaveChangesAsync();
 
 
