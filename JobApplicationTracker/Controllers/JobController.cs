@@ -20,11 +20,6 @@ namespace JobApplicationTracker.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Home()
-        {
-            return View();
-        }
-
         [Authorize]
         public async Task<IActionResult> Index()
         {
