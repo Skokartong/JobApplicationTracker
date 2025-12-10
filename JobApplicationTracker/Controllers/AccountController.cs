@@ -1,6 +1,7 @@
 ﻿using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobApplicationTracker.Controllers
@@ -17,14 +18,15 @@ namespace JobApplicationTracker.Controllers
             return Challenge(authenticationProperties, "Auth0");
         }
 
-        public IActionResult Logout()
+        [Authorize]
+        public async Task Logout()
         {
-            var authenticationProperties = new AuthenticationProperties
-            {
-                RedirectUri = "/"
-            };
+            var authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
+                .WithRedirectUri(Url.Action("Index", "Home"))
+                .Build();
 
-            return SignOut(authenticationProperties, "Auth0", CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
     }
 }
