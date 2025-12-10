@@ -4,29 +4,28 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace JobApplicationTracker.Controllers
+namespace JobApplicationTracker.Controllers;
+
+public class AccountController : Controller
 {
-    public class AccountController : Controller
+    public IActionResult Login()
     {
-        public IActionResult Login()
+        var authenticationProperties = new AuthenticationProperties
         {
-            var authenticationProperties = new AuthenticationProperties
-            {
-                RedirectUri = "/Job/Index"
-            };
+            RedirectUri = "/Job/Index"
+        };
 
-            return Challenge(authenticationProperties, "Auth0");
-        }
+        return Challenge(authenticationProperties, "Auth0");
+    }
 
-        [Authorize]
-        public async Task Logout()
-        {
-            var authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
-                .WithRedirectUri(Url.Action("Index", "Home"))
-                .Build();
+    [Authorize]
+    public async Task Logout()
+    {
+        var authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
+            .WithRedirectUri(Url.Action("Index", "Home"))
+            .Build();
 
-            await HttpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        }
+        await HttpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     }
 }
