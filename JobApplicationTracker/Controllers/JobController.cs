@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Reflection.Metadata;
+using System.Security.Claims;
 using JobApplicationTracker.Data;
 using JobApplicationTracker.Models;
 using JobApplicationTracker.Models.Enums;
@@ -24,10 +25,13 @@ namespace JobApplicationTracker.Controllers
         public async Task<IActionResult> Dashboard()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var name = User.FindFirst("name")?.Value;
 
             var jobs = await _context.JobApplications
                 .Where(j => j.UserId == userId)
                 .ToListAsync();
+
+            ViewBag.Name = name;
 
             return View(jobs);
         }
@@ -143,7 +147,7 @@ namespace JobApplicationTracker.Controllers
 
             if (exceptionFeature != null)
             {
-                _logger.LogError(exceptionFeature.Error, 
+                _logger.LogError(exceptionFeature.Error,
                     "An error occurred: {Path}", exceptionFeature.Path);
             }
 
