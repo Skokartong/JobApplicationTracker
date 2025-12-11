@@ -12,7 +12,7 @@ public class AccountController : Controller
     {
         var authenticationProperties = new AuthenticationProperties
         {
-            RedirectUri = "/Job/Index"
+            RedirectUri = "/Job/Dashboard"
         };
 
         return Challenge(authenticationProperties, "Auth0");

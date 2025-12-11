@@ -6,10 +6,8 @@ namespace JobApplicationTracker.Models
     {
         public int Id { get; set; }
         public string UserId { get; set; }
-        public int CategoryId { get; set; }
         public JobCategory JobCategory { get; set; }
-        public int TitleId { get; set; }
-        public JobTitle JobTitle { get; set; }
+        public string Title { get; set; }
         public EmploymentType Type { get; set; }
         public JobLevel Level { get; set; }
         public ApplicationStatus Status { get; set; }

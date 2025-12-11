@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div style="min-height:100vh; 
+            background: linear-gradient(90deg, rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:2rem;">
+
+    <div class="card text-center p-4 rounded-4 shadow" style="max-width: 400px; width:100%; background-color: rgba(255,255,255,0.15); backdrop-filter: blur(10px);">
+        
+        <div class="mb-4">
+            <i class="bi bi-person-circle text-white fs-1"></i>
+        </div>
+
+        <h2 class="fw-bold text-white mb-3">Welcome Back</h2>
+        <p class="text-white-75 mb-4">
+            Log in to access your job applications and track your career progress.
+        </p>
+
+        <a asp-controller="Account" asp-action="Login" class="btn btn-light btn-lg rounded-pill px-5">
+            Log in with Auth0
+        </a>
+
+        <p class="text-white-50 mt-4 small">
+            By logging in, you agree to our terms and privacy policy.
+        </p>
+    </div>
+
+</div>
