@@ -7,9 +7,4 @@ public class HomeController : Controller
     {
         return View();
     }
-
-    public async Task<IActionResult> About()
-    {
-        return View();
-    }
 }
