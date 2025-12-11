@@ -40,9 +40,6 @@ a.navbar-brand {
   border-radius: 15px;
 }
 
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
 .border-bottom {
   border-bottom: 1px solid #e5e5e5;
 }
@@ -67,5 +64,6 @@ span{
   white-space: nowrap;
   line-height: 60px;
 }
+
 
 

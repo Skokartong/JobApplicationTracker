@@ -1,13 +1,84 @@
-<div class="d-flex justify-content-center align-items-center">
-    <div class="card shadow" style="max-width: 600px; width: 100%;">
-        <img class="card-img-top" src="~/images/job.jpg" alt="Two people shaking hands, probably got a job offer...">
-        <div class="card-body">
-            <h3 class="card-text text-center">
-                Get <span>on trax</span> with your job applications today.
-            </h3>
-            <div class="d-flex justify-content-center gap-2 mt-3">
-                <a class="btn btn-custom" asp-controller="Account" asp-action="Login">Login</a>
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div
+    style="min-height:100vh; 
+            background: linear-gradient(90deg, rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%);">
+
+    <div class="container py-5">
+
+        <div class="text-center text-white mt-5">
+
+            <div class="d-inline-flex align-items-center gap-2 bg-white bg-opacity-25 px-4 py-2 rounded-pill mb-4">
+                <i class="bi bi-stars"></i>
+                <span class="small">Stay on top of your career journey</span>
             </div>
+
+            <h1 class="display-3 fw-bold mb-3">
+                Your Job Application<br />
+                <span style="
+                    background: linear-gradient(90deg, #ffffff, #fef9c3);
+                    -webkit-background-clip: text;
+                    color: transparent;">
+                    Superhero
+                </span>
+            </h1>
+
+            <p class="lead mx-auto" style="max-width: 700px;">
+                Organize your job applications, track interviews, and take full control of your career — all in one
+                place.
+            </p>
+
+            <a asp-controller="Account" asp-action="Login" class="btn btn-light btn-lg rounded-pill px-5 mt-3">
+                Get Started for Free
+            </a>
+
         </div>
+
+        <div class="row text-white mt-5 pt-4" style="max-width: 900px; margin: 0 auto;">
+
+            <div class="col-md-4 mb-4">
+                <div class="p-4 rounded-4 border border-white border-opacity-50 bg-white bg-opacity-25">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center mb-3"
+                        style="width:60px; height:60px; background: #2A7B9B;">
+                        <i class="bi bi-bullseye text-white fs-3"></i>
+                    </div>
+                    <h4>Stay Organized</h4>
+                    <p class="text-white-75">
+                        Keep all your applications in one place with statuses, dates, and notes.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="p-4 rounded-4 border border-white border-opacity-50 bg-white bg-opacity-25">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center mb-3"
+                        style="width:60px; height:60px; background: #57C785;">
+                        <i class="bi bi-graph-up-arrow text-white fs-3"></i>
+                    </div>
+                    <h4>Track Your Progress</h4>
+                    <p class="text-white-75">
+                        View statistics and follow your application pipeline at every stage.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="p-4 rounded-4 border border-white border-opacity-50 bg-white bg-opacity-25">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center mb-3"
+                        style="width:60px; height:60px; background: #EDDD53;">
+                        <i class="bi bi-check2-circle text-dark fs-3"></i>
+                    </div>
+                    <h4>Reach Your Goals</h4>
+                    <p class="text-white-75">
+                        Stay focused and keep a clear overview of all opportunities ahead of you.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
     </div>
+
 </div>
