@@ -25,11 +25,6 @@ public class JobController : Controller
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        foreach (var claim in User.Claims)
-        {
-            System.Console.WriteLine($"{claim.Type}: {claim.Value}");
-        }
-
         var Jobs = await _context.JobApplications
             .Include(j => j.JobCategory)
             .Include(j => j.JobTitle)
