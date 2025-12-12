@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Globalization;
 
 namespace JobApplicationTracker.Service
 {
@@ -30,43 +29,57 @@ namespace JobApplicationTracker.Service
             }
 
             var content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(content);
 
-            var jobListings = JsonConvert.DeserializeObject<List<JobListing>>(content)
+            var result = JsonConvert.DeserializeObject<JobSearchResponse>(content);
+
+            if (result == null || result.JobListings == null || !result.JobListings.Any())
+            {
+                return Enumerable.Empty<JobListing>();
+            }
+
+            if (result == null || result.JobListings == null || !result.JobListings.Any())
+            {
+                return Enumerable.Empty<JobListing>(); 
+            }
+
+            var jobListings = result.JobListings
                 .Select(job => new JobListing
                 {
                     Id = job.Id,
-                    Title = job.Title,
-                    Url = job.Url,
+                    Title = job.Title, 
+                    Url = job.Url, 
                     Requirements = job.Requirements,
 
                     Employer = new Employer
                     {
-                        Name = job.Employer?.Name
+                        Name = job.Employer?.Name ?? "Unknown Employer"  
                     },
 
                     Address = new Address
                     {
-                        City = job.Address?.City,
-                        StreetAddress = job.Address?.StreetAddress,
-                        Postcode = job.Address?.Postcode,
-                        Country = job.Address?.Country
+                        City = job.Address?.City ?? "Unknown City", 
+                        StreetAddress = job.Address?.StreetAddress ?? "Unknown Street",  
+                        Postcode = job.Address?.Postcode ?? "Unknown Postcode",  
+                        Country = job.Address?.Country ?? "Unknown Country"  
                     },
 
                     Description = job.Description != null ? new Description
                     {
-                        Text = job.Description.Text
+                        Text = job.Description.Text ?? "No description available"  
                     } : null,
 
                     JobType = new JobType
                     {
-                        Label = job.JobType?.Label
+                        Label = job.JobType?.Label ?? "Unknown Job Type" 
                     },
 
                     Category = job.Category != null ? new Category
                     {
-                        Label = job.Category.Label
+                        Label = job.Category.Label ?? "Unknown Category"  
                     } : null
-                }).ToList();
+                })
+                .ToArray();  
 
             return jobListings;
         }
