@@ -1,7 +1,6 @@
 ﻿using JobApplicationTracker.Models.Enums;
 
-namespace JobApplicationTracker.Models
-{
+namespace JobApplicationTracker.Models;
     public class JobApplication
     {
         public int Id { get; set; }
@@ -14,4 +13,3 @@ namespace JobApplicationTracker.Models
         public DateTime AppliedDate { get; set; } = DateTime.UtcNow;
         public string Company { get; set; }
     }
-}

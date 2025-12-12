@@ -9,5 +9,6 @@ namespace JobApplicationTracker.Data
         {        
         }
         public DbSet<JobApplication> JobApplications { get; set; }
+        public DbSet<JobListing> JobListings {get;set;}
     }
 }
