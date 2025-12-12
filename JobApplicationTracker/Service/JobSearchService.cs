@@ -53,7 +53,7 @@ namespace JobApplicationTracker.Service
                 },
                 Description = new Description
                 {
-                    Text = hit.Description?.Text
+                    Text = hit.Description.Text
                 },
                 Address = new Address
                 {

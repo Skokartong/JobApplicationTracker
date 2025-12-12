@@ -2,40 +2,73 @@
     ViewData["Title"] = "Job Search";
 }
 
-<h2>Job Search</h2>
+<div style="min-height: 100vh; background: linear-gradient(90deg, rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%);">
+    <div class="container py-5">
 
-<form method="get" asp-action="Search">
-    <div class="form-group">
-        <label for="SearchTerm">Search Term</label>
-        <input type="text" id="SearchTerm" name="searchTerm" class="form-control" value="@ViewBag.SearchTerm" />
-    </div>
-    
-    <div class="form-group">
-        <label for="Location">Location</label>
-        <input type="text" id="Location" name="location" class="form-control" value="@ViewBag.Location" />
-    </div>
-    
-    <button type="submit" class="btn btn-primary">Search</button>
-</form>
+        <div class="text-center text-white mt-5">
+            <h1 class="display-3 fw-bold mb-3">
+                Find Your Perfect Job
+            </h1>
+            <p class="lead mx-auto" style="max-width: 700px;">
+                Search for jobs by title, location, or category and take your career to the next level.
+            </p>
+        </div>
 
-@if (Model != null)
-{
-    <h3>Job Listings</h3>
-    <ul>
-        @foreach (var job in Model)
-        {
-            <li>
-                <strong>@job.Title</strong> - @job.Employer.Name<br />
-                @job.Description<br />
-                <a href="@job.Url" target="_blank">View Job</a><br />
-                <form method="post" asp-action="SaveToApplications" asp-route-jobId="@job.Id">
-                    <button type="submit" class="btn btn-success">Save to Applications</button>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form method="get" asp-action="Search" class="p-4 rounded-4 border border-white border-opacity-50 bg-white bg-opacity-25">
+                    <div class="form-group mb-4">
+                        <label for="SearchTerm" class="text-white">Search Term</label>
+                        <input type="text" id="SearchTerm" name="searchTerm" class="form-control" value="@ViewBag.SearchTerm" placeholder="e.g. Developer" />
+                    </div>
+                    
+                    <div class="form-group mb-4">
+                        <label for="Location" class="text-white">Location</label>
+                        <input type="text" id="Location" name="location" class="form-control" value="@ViewBag.Location" placeholder="e.g. Stockholm" />
+                    </div>
+                    
+                    <button type="submit" class="btn btn-light btn-lg rounded-pill px-5 mt-3">
+                        Search
+                    </button>
                 </form>
-            </li>
+            </div>
+        </div>
+
+        @if (Model != null)
+        {
+            <h3 class="text-white mt-5">Job Listings</h3>
+            <ul class="list-unstyled mt-4">
+                @foreach (var job in Model)
+                {
+                    <li class="mb-4">
+                        <div class="card shadow-sm border-light rounded-4">
+                            <div class="card-body">
+                                <h4 class="card-title">@job.Title</h4>
+                                <p class="card-text"><strong>@job.Employer.Name</strong></p>
+                                <p class="card-text">@job.Description.Text</p>
+
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#description-@job.Id">
+                                    &#9660; Show Description
+                                </button>
+                                <div id="description-@job.Id" class="collapse mt-3">
+                                    <p>@job.Description.Text</p>
+                                </div>
+
+                                <a href="@job.Url" target="_blank" class="btn btn-primary mt-3">View Job</a>
+
+                                <form method="post" asp-action="SaveToApplications" asp-route-jobId="@job.Id" class="mt-3">
+                                    <button type="submit" class="btn btn-success">Save to Applications</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
         }
-    </ul>
-}
-else
-{
-    <p>No jobs found matching your criteria.</p>
-}
+        else
+        {
+            <p class="text-white">No jobs found matching your criteria.</p>
+        }
+
+    </div>
+</div>
