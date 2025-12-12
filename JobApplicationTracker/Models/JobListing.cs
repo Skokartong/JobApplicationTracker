@@ -1,8 +1,8 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using JobApplicationTracker.Models.Enums;
 using Newtonsoft.Json;
 
-namespace JobApplicationTracker.Models
-{
+namespace JobApplicationTracker.Models;
     public class JobListing
     {
         [JsonProperty("id")]  
@@ -10,7 +10,8 @@ namespace JobApplicationTracker.Models
 
         [JsonProperty("title")]  
         public string Title { get; set; }
-
+        [ForeignKey("Employer")]
+        public int EmployerId { get; set; }
         [JsonProperty("employer")]  
         public Employer Employer { get; set; }  
 
@@ -43,7 +44,8 @@ namespace JobApplicationTracker.Models
 
     public class Employer
     {
+        public int? Id {get;set;}
         [JsonProperty("name")]  
         public string Name { get; set; }
+        public ICollection<JobListing> JobListings { get; set; }
     }
-}
