@@ -1,6 +1,6 @@
 using Auth0.AspNetCore.Authentication;
 using JobApplicationTracker.Data;
-using JobApplicationTracker.Service;
+//using JobApplicationTracker.Service;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobApplicationTracker
@@ -28,7 +28,7 @@ namespace JobApplicationTracker
             });
 
             // Services
-            builder.Services.AddScoped<IJobSearchService, JobSearchService>();
+            // builder.Services.AddScoped<IJobSearchService, JobSearchService>();
 
             var app = builder.Build();
 
