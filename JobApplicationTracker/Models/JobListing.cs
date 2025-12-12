@@ -15,7 +15,7 @@ public class JobListing
     public string Title { get; set; }
 
     [ForeignKey("Employer")]
-    public int EmployerId { get; set; }
+    public int? EmployerId { get; set; }
 
     [JsonProperty("employer")]
     public Employer Employer { get; set; }
@@ -27,10 +27,10 @@ public class JobListing
     public Address Address { get; set; }
 
     [ForeignKey("JobType")]
-    public int JobTypeId { get; set; }
+    public int? JobTypeId { get; set; }
 
     [JsonProperty("employment_type")]
-    public JobType Type { get; set; }
+    public JobType JobType { get; set; }
 
     [JsonProperty("url")]
     public string Url { get; set; }
@@ -59,7 +59,6 @@ public class Employer
 
     [JsonProperty("name")]
     public string Name { get; set; }
-
     public ICollection<JobListing>? JobListings { get; set; }
 }
 
@@ -83,7 +82,7 @@ public class Address
 {
     public int? Id { get; set; }
 
-    [JsonProperty("city")]
+    [JsonProperty("municipality")]
     public string City { get; set; }
 
     [JsonProperty("street_address")]

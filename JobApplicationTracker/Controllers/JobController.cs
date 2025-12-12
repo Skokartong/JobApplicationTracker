@@ -3,6 +3,7 @@ using System.Security.Claims;
 using JobApplicationTracker.Data;
 using JobApplicationTracker.Models;
 using JobApplicationTracker.Models.Enums;
+using JobApplicationTracker.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,14 +13,15 @@ namespace JobApplicationTracker.Controllers
 {
     public class JobController : Controller
     {
-        //private readonly IJobSearchService _jobService;
+        private readonly IJobSearchService _jobService;
         private readonly JobContext _context;
         private readonly ILogger<JobController> _logger;
 
-        public JobController(JobContext context, ILogger<JobController> logger)
+        public JobController(JobContext context, ILogger<JobController> logger, IJobSearchService jobService)
         {
             _context = context;
             _logger = logger;
+            _jobService = jobService;
         }
 
         [Authorize]
@@ -155,52 +157,54 @@ namespace JobApplicationTracker.Controllers
             return View();
         }
 
-        // [Authorize]
-        // public IActionResult Search(string searchTerm, string location)
-        // {
-        //     var jobListings = new List<JobListing>();
+        [Authorize]
+        public IActionResult Search(string searchTerm, string location)
+        {
+            var jobListings = new List<JobListing>();
 
-        //     if (!string.IsNullOrEmpty(searchTerm) || !string.IsNullOrEmpty(location))
-        //     {
-        //         jobListings = _jobService.GetJobListingsAsync(searchTerm, location).Result.ToList();
-        //     }
+            if (!string.IsNullOrEmpty(searchTerm) || !string.IsNullOrEmpty(location))
+            {
+                jobListings = _jobService.GetJobListingsAsync(searchTerm, location).Result.ToList();
+            }
 
-        //     ViewBag.SearchTerm = searchTerm;
-        //     ViewBag.Location = location;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.Location = location;
 
-        //     return View(jobListings);
-        // }
+            return View(jobListings);
+        }
 
-        // [Authorize]
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public async Task<IActionResult> SaveToApplications(int jobId)
-        // {
-        //     var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveToApplications(int jobId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        //     if (userId == null)
-        //         return BadRequest("User not found.");
+            if (userId == null)
+                return BadRequest("User not found.");
 
-        //     var job = await _context.JobListings.FindAsync(jobId);
+            var job = await _context.JobListings.FindAsync(jobId);
 
-        //     if (job == null)
-        //         return NotFound();
+            if (job == null)
+                return NotFound();
 
-        //     var jobApplication = new JobApplication
-        //     {
-        //         UserId = userId,
-        //         Status = ApplicationStatus.Applied,
-        //         Title = job.Title,
-        //         JobCategory = JobCategoryExtension.MapIt(category)
-                
-        //     };
+            var jobApplication = new JobApplication
+            {
+                UserId = userId,
+                Status = ApplicationStatus.Applied,
+                Title = job.Title,
+                JobCategory = JobCategoryExtension.MapIt(job.Category.Label),
+                Type = EmploymentTypeExtension.MapIt(job.JobType.Label),
+                Level = JobLevel.Mid,
+                City = job.Address.City,
+                Company = job.Employer.Name
+            };
 
-        //     _context.JobApplications.Add(jobApplication);
-        //     await _context.SaveChangesAsync();
+            _context.JobApplications.Add(jobApplication);
+            await _context.SaveChangesAsync();
 
-        //     return RedirectToAction("Dashboard");
-        // }
-
+            return RedirectToAction("Dashboard");
+        }
 
         [Authorize]
         private void LoadDropdowns()
