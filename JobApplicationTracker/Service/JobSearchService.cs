@@ -19,18 +19,22 @@ namespace JobApplicationTracker.Service
 
         public async Task<IEnumerable<JobListing>> GetJobListingsAsync(string searchTerm, string location)
         {
-            var url = $"https://jobsearch.api.jobtechdev.se/search?query={searchTerm}&location={location}&limit=50";
+            var url = "https://jobsearch.api.jobtechdev.se/search?";
 
-            var response = await _client.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
+            if (!string.IsNullOrEmpty(searchTerm))
             {
-                throw new Exception("Failed to fetch job listings.");
+                url += $"q={Uri.EscapeDataString(searchTerm)}&";
             }
 
-            var content = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(content);
+            if (!string.IsNullOrEmpty(location))
+            {
+                url += $"location={Uri.EscapeDataString(location)}&";
+            }
 
+            url += "limit=50";
+
+            var response = await _client.GetAsync(url);
+            var content = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<JobSearchResponse>(content);
 
             if (result == null || result.JobListings == null || !result.JobListings.Any())
@@ -38,50 +42,24 @@ namespace JobApplicationTracker.Service
                 return Enumerable.Empty<JobListing>();
             }
 
-            if (result == null || result.JobListings == null || !result.JobListings.Any())
+            return result.JobListings.Select(hit => new JobListing
             {
-                return Enumerable.Empty<JobListing>(); 
-            }
-
-            var jobListings = result.JobListings
-                .Select(job => new JobListing
+                Id = hit.Id,
+                Title = hit.Title,
+                Url = hit.Url,
+                Employer = new Employer
                 {
-                    Id = job.Id,
-                    Title = job.Title, 
-                    Url = job.Url, 
-                    Requirements = job.Requirements,
-
-                    Employer = new Employer
-                    {
-                        Name = job.Employer?.Name ?? "Unknown Employer"  
-                    },
-
-                    Address = new Address
-                    {
-                        City = job.Address?.City ?? "Unknown City", 
-                        StreetAddress = job.Address?.StreetAddress ?? "Unknown Street",  
-                        Postcode = job.Address?.Postcode ?? "Unknown Postcode",  
-                        Country = job.Address?.Country ?? "Unknown Country"  
-                    },
-
-                    Description = job.Description != null ? new Description
-                    {
-                        Text = job.Description.Text ?? "No description available"  
-                    } : null,
-
-                    JobType = new JobType
-                    {
-                        Label = job.JobType?.Label ?? "Unknown Job Type" 
-                    },
-
-                    Category = job.Category != null ? new Category
-                    {
-                        Label = job.Category.Label ?? "Unknown Category"  
-                    } : null
-                })
-                .ToArray();  
-
-            return jobListings;
+                    Name = hit.Employer.Name
+                },
+                Description = new Description
+                {
+                    Text = hit.Description?.Text
+                },
+                Address = new Address
+                {
+                    City = hit.Address.City,
+                }
+            });
         }
     }
 }
