@@ -3,6 +3,7 @@ using System.Security.Claims;
 using JobApplicationTracker.Data;
 using JobApplicationTracker.Models;
 using JobApplicationTracker.Models.Enums;
+using JobApplicationTracker.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,13 +13,15 @@ namespace JobApplicationTracker.Controllers
 {
     public class JobController : Controller
     {
+        private readonly IJobSearchService _service;
         private readonly JobContext _context;
         private readonly ILogger<JobController> _logger;
 
-        public JobController(JobContext context, ILogger<JobController> logger)
+        public JobController(JobContext context, ILogger<JobController> logger, IJobSearchService service)
         {
             _context = context;
             _logger = logger;
+            _service = service;
         }
 
         [Authorize]

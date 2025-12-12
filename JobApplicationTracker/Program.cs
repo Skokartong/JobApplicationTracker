@@ -1,5 +1,6 @@
 using Auth0.AspNetCore.Authentication;
 using JobApplicationTracker.Data;
+using JobApplicationTracker.Service;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobApplicationTracker
@@ -33,6 +34,9 @@ namespace JobApplicationTracker
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            // Services
+            builder.Services.AddScoped<IJobSearchService, JobSearchService>();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
