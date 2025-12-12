@@ -1,0 +1,41 @@
+@{
+    ViewData["Title"] = "Job Search";
+}
+
+<h2>Job Search</h2>
+
+<form method="get" asp-action="Search">
+    <div class="form-group">
+        <label for="SearchTerm">Search Term</label>
+        <input type="text" id="SearchTerm" name="searchTerm" class="form-control" value="@ViewBag.SearchTerm" />
+    </div>
+    
+    <div class="form-group">
+        <label for="Location">Location</label>
+        <input type="text" id="Location" name="location" class="form-control" value="@ViewBag.Location" />
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <h3>Job Listings</h3>
+    <ul>
+        @foreach (var job in Model)
+        {
+            <li>
+                <strong>@job.Title</strong> - @job.Employer.Name<br />
+                @job.Description<br />
+                <a href="@job.Url" target="_blank">View Job</a><br />
+                <form method="post" asp-action="SaveToApplications" asp-route-jobId="@job.Id">
+                    <button type="submit" class="btn btn-success">Save to Applications</button>
+                </form>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No jobs found matching your criteria.</p>
+}

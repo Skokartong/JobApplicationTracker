@@ -13,15 +13,15 @@ namespace JobApplicationTracker.Controllers
 {
     public class JobController : Controller
     {
-        private readonly IJobSearchService _service;
+        private readonly IJobSearchService _jobService;
         private readonly JobContext _context;
         private readonly ILogger<JobController> _logger;
 
-        public JobController(JobContext context, ILogger<JobController> logger, IJobSearchService service)
+        public JobController(JobContext context, ILogger<JobController> logger, IJobSearchService jobService)
         {
             _context = context;
             _logger = logger;
-            _service = service;
+            _jobService = jobService;
         }
 
         [Authorize]
@@ -156,6 +156,53 @@ namespace JobApplicationTracker.Controllers
 
             return View();
         }
+
+        [Authorize]
+        public IActionResult Search(string searchTerm, string location)
+        {
+            var jobListings = new List<JobListing>();
+
+            if (!string.IsNullOrEmpty(searchTerm) || !string.IsNullOrEmpty(location))
+            {
+                jobListings = _jobService.GetJobListingsAsync(searchTerm, location).Result.ToList();
+            }
+
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.Location = location;
+
+            return View(jobListings);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveToApplications(int jobId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+                return BadRequest("User not found.");
+
+            var job = await _context.JobListings.FindAsync(jobId);
+
+            if (job == null)
+                return NotFound();
+
+            var jobApplication = new JobApplication
+            {
+                UserId = userId,
+                Status = ApplicationStatus.Applied,
+                Title = job.Title,
+                JobCategory = job.Category.Label,
+                
+            };
+
+            _context.JobApplications.Add(jobApplication);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Dashboard");
+        }
+
 
         [Authorize]
         private void LoadDropdowns()

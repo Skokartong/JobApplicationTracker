@@ -27,6 +27,9 @@ namespace JobApplicationTracker
                 options.ClientSecret = builder.Configuration["Auth0:ClientSecret"];
             });
 
+            // Services
+            builder.Services.AddScoped<IJobSearchService, JobSearchService>();
+
             var app = builder.Build();
 
             if (!app.Environment.IsDevelopment())
@@ -34,9 +37,6 @@ namespace JobApplicationTracker
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-
-            // Services
-            builder.Services.AddScoped<IJobSearchService, JobSearchService>();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
