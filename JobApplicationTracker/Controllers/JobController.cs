@@ -157,51 +157,51 @@ namespace JobApplicationTracker.Controllers
             return View();
         }
 
-        [Authorize]
-        public IActionResult Search(string searchTerm, string location)
-        {
-            var jobListings = new List<JobListing>();
+        // [Authorize]
+        // public IActionResult Search(string searchTerm, string location)
+        // {
+        //     var jobListings = new List<JobListing>();
 
-            if (!string.IsNullOrEmpty(searchTerm) || !string.IsNullOrEmpty(location))
-            {
-                jobListings = _jobService.GetJobListingsAsync(searchTerm, location).Result.ToList();
-            }
+        //     if (!string.IsNullOrEmpty(searchTerm) || !string.IsNullOrEmpty(location))
+        //     {
+        //         jobListings = _jobService.GetJobListingsAsync(searchTerm, location).Result.ToList();
+        //     }
 
-            ViewBag.SearchTerm = searchTerm;
-            ViewBag.Location = location;
+        //     ViewBag.SearchTerm = searchTerm;
+        //     ViewBag.Location = location;
 
-            return View(jobListings);
-        }
+        //     return View(jobListings);
+        // }
 
-        [Authorize]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveToApplications(int jobId)
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        // [Authorize]
+        // [HttpPost]
+        // [ValidateAntiForgeryToken]
+        // public async Task<IActionResult> SaveToApplications(int jobId)
+        // {
+        //     var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (userId == null)
-                return BadRequest("User not found.");
+        //     if (userId == null)
+        //         return BadRequest("User not found.");
 
-            var job = await _context.JobListings.FindAsync(jobId);
+        //     var job = await _context.JobListings.FindAsync(jobId);
 
-            if (job == null)
-                return NotFound();
+        //     if (job == null)
+        //         return NotFound();
 
-            var jobApplication = new JobApplication
-            {
-                UserId = userId,
-                Status = ApplicationStatus.Applied,
-                Title = job.Title,
-                JobCategory = job.Category.Label,
+        //     var jobApplication = new JobApplication
+        //     {
+        //         UserId = userId,
+        //         Status = ApplicationStatus.Applied,
+        //         Title = job.Title,
+        //         JobCategory = JobCategoryExtension.MapIt(category)
                 
-            };
+        //     };
 
-            _context.JobApplications.Add(jobApplication);
-            await _context.SaveChangesAsync();
+        //     _context.JobApplications.Add(jobApplication);
+        //     await _context.SaveChangesAsync();
 
-            return RedirectToAction("Dashboard");
-        }
+        //     return RedirectToAction("Dashboard");
+        // }
 
 
         [Authorize]

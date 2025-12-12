@@ -11,40 +11,44 @@ public class JobListing
     [JsonProperty("id")]
     public string Id { get; set; }
 
-    [JsonProperty("title")]
+    [JsonProperty("headline")]
     public string Title { get; set; }
+
     [ForeignKey("Employer")]
     public int EmployerId { get; set; }
+
     [JsonProperty("employer")]
     public Employer Employer { get; set; }
+
+    [ForeignKey("Address")]
+    public int? AddressId { get; set; }
 
     [JsonProperty("workplace_address")]
     public Address Address { get; set; }
 
-    [JsonProperty("description")]
-    public string Description { get; set; }
+    [ForeignKey("JobType")]
+    public int JobTypeId { get; set; }
 
     [JsonProperty("employment_type")]
-    public EmploymentType Type { get; set; }
-
-    [JsonProperty("jobLevel")]
-    public string JobLevel { get; set; }
-
-    [JsonProperty("publishedDate")]
-    public DateTime PublishedDate { get; set; }
+    public JobType Type { get; set; }
 
     [JsonProperty("url")]
     public string Url { get; set; }
 
-    [JsonProperty("companyDescription")]
-    public string CompanyDescription { get; set; }
-
     [JsonProperty("requirements")]
     public string Requirements { get; set; }
+
     [ForeignKey("Category")]
     public int? CategoryId { get; set; }
+
     [JsonProperty("occupation_field")]
     public Category? Category { get; set; }
+
+    [ForeignKey("Description")]
+    public int? DescriptionId { get; set; }
+
+    [JsonProperty("description")]
+    public Description Description { get; set; }
 
     public ApplicationStatus? Status { get; set; }
 }
@@ -52,29 +56,50 @@ public class JobListing
 public class Employer
 {
     public int? Id { get; set; }
+
     [JsonProperty("name")]
     public string Name { get; set; }
+
     public ICollection<JobListing>? JobListings { get; set; }
 }
 
 public class Category
 {
     public int? Id { get; set; }
+
     [JsonProperty("label")]
     public string Label { get; set; }
 }
 
-public class EmploymentType
+public class JobType
 {
     public int? Id { get; set; }
+
     [JsonProperty("label")]
-    public string Type { get; set; }
+    public string Label { get; set; }
 }
 
 public class Address
 {
-    public int? Id {get;set;}
+    public int? Id { get; set; }
+
     [JsonProperty("city")]
-    public string City {get;set;}
+    public string City { get; set; }
+
+    [JsonProperty("street_address")]
+    public string StreetAddress { get; set; }
+
+    [JsonProperty("postcode")]
+    public string Postcode { get; set; }
+
+    [JsonProperty("country")]
+    public string Country { get; set; }
 }
 
+public class Description
+{
+    public int? Id { get; set; }
+
+    [JsonProperty("text")]
+    public string Text { get; set; }
+}
