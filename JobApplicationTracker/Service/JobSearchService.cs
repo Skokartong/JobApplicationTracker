@@ -40,9 +40,7 @@ namespace JobApplicationTracker.Service
                     {
                         Name = job.Employer.Name 
                     },
-                    Location = job.Location,
                     Description = job.Description,
-                    EmploymentType = job.EmploymentType,
                     JobLevel = job.JobLevel,
                     PublishedDate = job.PublishedDate.ToUniversalTime(),
                     Url = job.Url,
