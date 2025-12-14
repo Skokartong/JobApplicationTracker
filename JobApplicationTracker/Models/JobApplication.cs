@@ -4,7 +4,7 @@ namespace JobApplicationTracker.Models;
 
 public class JobApplication
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public string UserId { get; set; }
     public JobCategory JobCategory { get; set; }
     public string Title { get; set; }

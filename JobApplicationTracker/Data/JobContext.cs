@@ -5,16 +5,18 @@ namespace JobApplicationTracker.Data
 {
     public class JobContext : DbContext
     {
-        public JobContext(DbContextOptions<JobContext> options) : base(options)
+        public JobContext(DbContextOptions<JobContext> options)
+            : base(options)
         {
         }
+
         public DbSet<JobApplication> JobApplications { get; set; }
         public DbSet<JobListing> JobListings { get; set; }
         public DbSet<Employer> Employers { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<JobType> Types {get;set;}
-        public DbSet<Address> Addresses {get;set;}
-        public DbSet<ApplicationDetails> Details {get;set;}
+        public DbSet<JobType> Types { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<ApplicationDetails> Details { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -23,7 +25,22 @@ namespace JobApplicationTracker.Data
             modelBuilder.Entity<JobListing>()
                 .HasOne(j => j.Employer)
                 .WithMany(e => e.JobListings)
-                .HasForeignKey(j => j.EmployerId);
+                .HasForeignKey(j => j.EmployerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<JobApplication>()
+                .HasKey(e => e.Id);
+
+            modelBuilder.Entity<JobApplication>()
+                .Property(e => e.Id)
+                .ValueGeneratedNever();
+
+            modelBuilder.Entity<JobListing>()
+                .HasKey(e => e.Id);
+
+            modelBuilder.Entity<JobListing>()
+                .Property(e => e.Id)
+                .ValueGeneratedNever();
         }
     }
 }

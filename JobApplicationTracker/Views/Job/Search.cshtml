@@ -54,7 +54,7 @@
                                     <p>@job.Description.Text</p>
                                 </div>
 
-                                <a href="@job.ApplicationDetails.Url" target="_blank" class="btn btn-primary mt-3">View Job</a>
+                                <a href="@job.Details.Url" target="_blank" class="btn btn-primary mt-3">Apply</a>
 
                                 <form method="post" asp-action="SaveToApplications" asp-route-jobId="@job.Id" class="mt-3">
                                     <button type="submit" class="btn btn-success">Save to Applications</button>

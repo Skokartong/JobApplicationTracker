@@ -121,11 +121,8 @@ namespace JobApplicationTracker.Migrations
 
             modelBuilder.Entity("JobApplicationTracker.Models.JobApplication", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("AppliedDate")
                         .HasColumnType("timestamp with time zone");
@@ -251,7 +248,8 @@ namespace JobApplicationTracker.Migrations
 
                     b.HasOne("JobApplicationTracker.Models.Employer", "Employer")
                         .WithMany("JobListings")
-                        .HasForeignKey("EmployerId");
+                        .HasForeignKey("EmployerId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("JobApplicationTracker.Models.JobType", "JobType")
                         .WithMany()

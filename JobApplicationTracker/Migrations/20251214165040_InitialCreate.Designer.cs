@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JobApplicationTracker.Migrations
 {
     [DbContext(typeof(JobContext))]
-    [Migration("20251214145621_Url")]
-    partial class Url
+    [Migration("20251214165040_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -124,11 +124,8 @@ namespace JobApplicationTracker.Migrations
 
             modelBuilder.Entity("JobApplicationTracker.Models.JobApplication", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("AppliedDate")
                         .HasColumnType("timestamp with time zone");
@@ -254,7 +251,8 @@ namespace JobApplicationTracker.Migrations
 
                     b.HasOne("JobApplicationTracker.Models.Employer", "Employer")
                         .WithMany("JobListings")
-                        .HasForeignKey("EmployerId");
+                        .HasForeignKey("EmployerId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("JobApplicationTracker.Models.JobType", "JobType")
                         .WithMany()

@@ -73,11 +73,11 @@ namespace JobApplicationTracker.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Update(int id)
+        public async Task<IActionResult> Update(string jobId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var job = await _context.JobApplications.FindAsync(id);
+            var job = await _context.JobApplications.FindAsync(jobId);
 
             if (job == null || job.UserId != userId)
                 return NotFound();
@@ -89,12 +89,12 @@ namespace JobApplicationTracker.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(int id, JobApplication job)
+        public async Task<IActionResult> Update(string jobId, JobApplication job)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var existingJob = await _context.JobApplications
-                .FirstOrDefaultAsync(j => j.Id == id && j.UserId == userId);
+                .FirstOrDefaultAsync(j => j.Id == jobId && j.UserId == userId);
 
             if (existingJob == null)
                 return BadRequest();
@@ -114,11 +114,11 @@ namespace JobApplicationTracker.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string jobId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var job = await _context.JobApplications.FindAsync(id);
+            var job = await _context.JobApplications.FindAsync(jobId);
 
             if (job == null || job.UserId != userId)
                 return NotFound();
@@ -129,11 +129,11 @@ namespace JobApplicationTracker.Controllers
         [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string jobId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var job = await _context.JobApplications.FindAsync(id);
+            var job = await _context.JobApplications.FindAsync(jobId);
 
             if (job == null || job.UserId != userId)
                 return NotFound();
@@ -176,7 +176,7 @@ namespace JobApplicationTracker.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveToApplications(int jobId)
+        public async Task<IActionResult> SaveToApplications(string jobId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
