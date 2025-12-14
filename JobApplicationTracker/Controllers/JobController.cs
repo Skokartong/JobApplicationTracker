@@ -67,6 +67,8 @@ namespace JobApplicationTracker.Controllers
             _context.JobApplications.Add(job);
             await _context.SaveChangesAsync();
 
+            TempData["SuccessMessage"] = "Application added successfully! ✅";
+
             return RedirectToAction(nameof(Dashboard));
         }
 
@@ -107,6 +109,8 @@ namespace JobApplicationTracker.Controllers
 
             _context.Entry(existingJob).CurrentValues.SetValues(job);
             await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Job updated successfully! ✅";
 
             return RedirectToAction(nameof(Dashboard));
         }

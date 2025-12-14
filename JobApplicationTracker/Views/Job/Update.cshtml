@@ -1,6 +1,7 @@
 ﻿@model JobApplicationTracker.Models.JobApplication
 
-<div class="container mt-5 h-90">
+<div class="container mt-5 p-4 h-100 shadow rounded-lg" style="background: linear-gradient(180deg, #f8f9fa 0%, #dce4ec 100%);">
+    <h1>Update Application</h1>
     <form asp-action="Update" method="post">
         @Html.AntiForgeryToken()
         <input type="hidden" asp-for="Id" />
@@ -13,33 +14,33 @@
         <div class="form-group">
             <label asp-for="JobCategory">Category</label>
             @Html.DropDownListFor(model => model.JobCategory,
-                (List<SelectListItem>)ViewBag.CategoryList,
-                "Choose category",
-                new { @class = "form-control" })
+            (List<SelectListItem>)ViewBag.CategoryList,
+                        "Choose category",
+                        new { @class = "form-control" })
         </div>
 
         <div class="form-group">
             <label asp-for="Status">Status</label>
             @Html.DropDownListFor(model => model.Status,
-                (List<SelectListItem>)ViewBag.StatusList,
-                "Choose status",
-                new { @class = "form-control" })
+                        (List<SelectListItem>)ViewBag.StatusList,
+                        "Choose status",
+                        new { @class = "form-control" })
         </div>
 
         <div class="form-group">
             <label asp-for="Type">Employment Type</label>
             @Html.DropDownListFor(model => model.Type,
-                (List<SelectListItem>)ViewBag.TypeList,
-                "Choose type",
-                new { @class = "form-control" })
+                        (List<SelectListItem>)ViewBag.TypeList,
+                        "Choose type",
+                        new { @class = "form-control" })
         </div>
 
         <div class="form-group">
             <label asp-for="Level">Level</label>
             @Html.DropDownListFor(model => model.Level,
-                (List<SelectListItem>)ViewBag.LevelList,
-                "Choose level",
-                new { @class = "form-control" })
+                        (List<SelectListItem>)ViewBag.LevelList,
+                        "Choose level",
+                        new { @class = "form-control" })
         </div>
 
         <div class="form-group">

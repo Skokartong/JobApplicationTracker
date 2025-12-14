@@ -1,6 +1,18 @@
 ﻿@model IEnumerable<JobApplicationTracker.Models.JobApplication>
 
 @{
+    var successMessage = TempData["SuccessMessage"] as string;
+}
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        @successMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@{
 	ViewData["Title"] = "Job Applications";
 
 	var statusCounts = new
