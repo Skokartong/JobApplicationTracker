@@ -12,6 +12,6 @@ public class JobApplication
     public JobLevel Level { get; set; }
     public ApplicationStatus Status { get; set; }
     public DateTime AppliedDate { get; set; } = DateTime.UtcNow;
-    public string City {get;set;}
+    public string? City {get;set;}
     public string Company { get; set; }
 }

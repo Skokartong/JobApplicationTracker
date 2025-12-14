@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using JobApplicationTracker.Data;
 using JobApplicationTracker.Models;
 using JobApplicationTracker.Models.Enums;
@@ -35,7 +34,6 @@ namespace JobApplicationTracker.Controllers
                 .ToListAsync();
 
             ViewBag.Name = name;
-
             return View(jobs);
         }
 
@@ -52,10 +50,10 @@ namespace JobApplicationTracker.Controllers
         public async Task<IActionResult> Add(JobApplication job)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
             if (string.IsNullOrEmpty(userId))
                 return BadRequest("UserId couldn't be found");
 
+            job.Id = Guid.NewGuid().ToString();
             job.UserId = userId;
 
             ModelState.Remove("UserId");
@@ -73,11 +71,10 @@ namespace JobApplicationTracker.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Update(string jobId)
+        public async Task<IActionResult> Update(string id)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            var job = await _context.JobApplications.FindAsync(jobId);
+            var job = await _context.JobApplications.FindAsync(id);
 
             if (job == null || job.UserId != userId)
                 return NotFound();
@@ -89,12 +86,13 @@ namespace JobApplicationTracker.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(string jobId, JobApplication job)
+        public async Task<IActionResult> Update(JobApplication job)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
+            ModelState.Remove("UserId");
+            
             var existingJob = await _context.JobApplications
-                .FirstOrDefaultAsync(j => j.Id == jobId && j.UserId == userId);
+                .FirstOrDefaultAsync(j => j.Id == job.Id && j.UserId == userId);
 
             if (existingJob == null)
                 return BadRequest();
@@ -108,17 +106,16 @@ namespace JobApplicationTracker.Controllers
             }
 
             _context.Entry(existingJob).CurrentValues.SetValues(job);
-
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Dashboard));
         }
 
         [Authorize]
-        public async Task<IActionResult> Delete(string jobId)
+        public async Task<IActionResult> Delete(string id)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            var job = await _context.JobApplications.FindAsync(jobId);
+            var job = await _context.JobApplications.FindAsync(id);
 
             if (job == null || job.UserId != userId)
                 return NotFound();
@@ -129,11 +126,10 @@ namespace JobApplicationTracker.Controllers
         [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string jobId)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            var job = await _context.JobApplications.FindAsync(jobId);
+            var job = await _context.JobApplications.FindAsync(id);
 
             if (job == null || job.UserId != userId)
                 return NotFound();
@@ -144,105 +140,58 @@ namespace JobApplicationTracker.Controllers
             return RedirectToAction(nameof(Dashboard));
         }
 
-        public IActionResult Error()
-        {
-            var exceptionFeature = HttpContext.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
-
-            if (exceptionFeature != null)
-            {
-                _logger.LogError(exceptionFeature.Error,
-                    "An error occurred: {Path}", exceptionFeature.Path);
-            }
-
-            return View();
-        }
-
-        [Authorize]
-        public async Task<IActionResult> Search(string searchTerm, string location)
-        {
-            IEnumerable<JobListing> jobListings = Enumerable.Empty<JobListing>();
-
-            if (!string.IsNullOrEmpty(searchTerm) || !string.IsNullOrEmpty(location))
-            {
-                jobListings = await _jobService.GetJobListingsAsync(searchTerm, location) ?? Enumerable.Empty<JobListing>();
-            }
-
-            ViewBag.SearchTerm = searchTerm;
-            ViewBag.Location = location;
-
-            return View(jobListings);
-        }
-
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveToApplications(string jobId)
+        public async Task<IActionResult> SaveToApplications(string id)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (userId == null)
+            if (string.IsNullOrEmpty(userId))
                 return BadRequest("User not found.");
 
-            var job = await _context.JobListings.FindAsync(jobId);
-
+            var job = await _context.JobListings.FindAsync(id);
             if (job == null)
                 return NotFound();
 
             var jobApplication = new JobApplication
             {
+                Id = Guid.NewGuid().ToString(),
                 UserId = userId,
                 Status = ApplicationStatus.Applied,
                 Title = job.Title,
                 JobCategory = JobCategoryExtension.MapIt(job.Category.Label),
                 Type = EmploymentTypeExtension.MapIt(job.JobType.Label),
                 Level = JobLevel.Mid,
-                City = job.Address.City,
-                Company = job.Employer.Name
+                City = job.Address?.City ?? "",
+                Company = job.Employer?.Name ?? ""
             };
 
             _context.JobApplications.Add(jobApplication);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Dashboard");
+            return RedirectToAction(nameof(Dashboard));
         }
 
-        [Authorize]
         private void LoadDropdowns()
         {
             ViewBag.CategoryList = Enum.GetValues(typeof(JobCategory))
                 .Cast<JobCategory>()
-                .Select(e => new SelectListItem
-                {
-                    Value = e.ToString(),
-                    Text = e.ToString()
-                })
+                .Select(e => new SelectListItem { Value = e.ToString(), Text = e.ToString() })
                 .ToList();
 
             ViewBag.StatusList = Enum.GetValues(typeof(ApplicationStatus))
                 .Cast<ApplicationStatus>()
-                .Select(e => new SelectListItem
-                {
-                    Value = ((int)e).ToString(),
-                    Text = e.ToString()
-                })
+                .Select(e => new SelectListItem { Value = ((int)e).ToString(), Text = e.ToString() })
                 .ToList();
 
             ViewBag.TypeList = Enum.GetValues(typeof(EmploymentType))
                 .Cast<EmploymentType>()
-                .Select(e => new SelectListItem
-                {
-                    Value = ((int)e).ToString(),
-                    Text = e.ToString()
-                })
+                .Select(e => new SelectListItem { Value = ((int)e).ToString(), Text = e.ToString() })
                 .ToList();
 
             ViewBag.LevelList = Enum.GetValues(typeof(JobLevel))
                 .Cast<JobLevel>()
-                .Select(e => new SelectListItem
-                {
-                    Value = ((int)e).ToString(),
-                    Text = e.ToString()
-                })
+                .Select(e => new SelectListItem { Value = ((int)e).ToString(), Text = e.ToString() })
                 .ToList();
         }
     }
