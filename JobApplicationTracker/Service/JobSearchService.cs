@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace JobApplicationTracker.Service
@@ -46,7 +47,6 @@ namespace JobApplicationTracker.Service
             {
                 Id = hit.Id,
                 Title = hit.Title,
-                Url = hit.Url,
                 Employer = new Employer
                 {
                     Name = hit.Employer.Name
@@ -58,6 +58,10 @@ namespace JobApplicationTracker.Service
                 Address = new Address
                 {
                     City = hit.Address.City,
+                },
+                Details = new ApplicationDetails
+                {
+                    Url = hit.Details.Url
                 }
             });
         }

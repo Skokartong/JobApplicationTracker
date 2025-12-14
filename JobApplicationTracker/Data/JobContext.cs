@@ -14,6 +14,7 @@ namespace JobApplicationTracker.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<JobType> Types {get;set;}
         public DbSet<Address> Addresses {get;set;}
+        public DbSet<ApplicationDetails> Details {get;set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -30,10 +30,13 @@ public class JobListing
     public int? JobTypeId { get; set; }
 
     [JsonProperty("employment_type")]
-    public JobType JobType { get; set; }
 
-    [JsonProperty("url")]
-    public string Url { get; set; }
+    public JobType JobType { get; set; }
+    [ForeignKey("ApplicationDetails")]
+    public int? ApplicationDetailsId { get; set; }
+
+    [JsonProperty("application_details")]
+    public ApplicationDetails Details { get; set; }
 
     [JsonProperty("requirements")]
     public string Requirements { get; set; }
@@ -101,4 +104,11 @@ public class Description
 
     [JsonProperty("text")]
     public string Text { get; set; }
+}
+
+public class ApplicationDetails
+{
+    public int? Id { get; set; }
+    [JsonProperty("url")]
+    public string Url { get; set; }
 }
