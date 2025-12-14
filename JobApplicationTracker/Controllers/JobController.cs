@@ -90,7 +90,7 @@ namespace JobApplicationTracker.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             ModelState.Remove("UserId");
-            
+
             var existingJob = await _context.JobApplications
                 .FirstOrDefaultAsync(j => j.Id == job.Id && j.UserId == userId);
 
@@ -138,6 +138,23 @@ namespace JobApplicationTracker.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Dashboard));
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Search(string searchTerm, string location)
+        {
+            IEnumerable<JobListing> jobListings = Enumerable.Empty<JobListing>();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm) || !string.IsNullOrWhiteSpace(location))
+            {
+                jobListings = await _jobService.GetJobListingsAsync(searchTerm, location)
+                              ?? Enumerable.Empty<JobListing>();
+            }
+
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.Location = location;
+
+            return View(jobListings);
         }
 
         [Authorize]
