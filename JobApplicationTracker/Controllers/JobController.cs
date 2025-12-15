@@ -170,7 +170,8 @@ namespace JobApplicationTracker.Controllers
             if (string.IsNullOrEmpty(userId))
                 return BadRequest("User not found.");
 
-            var job = await _context.JobListings.FindAsync(id);
+            var job = await _jobService.GetJobListingByIdAsync(id);
+
             if (job == null)
                 return NotFound();
 

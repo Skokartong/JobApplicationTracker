@@ -65,5 +65,49 @@ namespace JobApplicationTracker.Service
                 }
             });
         }
+
+        public async Task<JobListing?> GetJobListingByIdAsync(string id)
+        {
+            var url = $"https://jobsearch.api.jobtechdev.se/ad/{Uri.EscapeDataString(id)}";
+
+            var response = await _client.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            var hit = JsonConvert.DeserializeObject<JobListing>(content);
+
+            if (hit == null)
+            {
+                return null;
+            }
+
+            return new JobListing
+            {
+                Id = hit.Id,
+                Title = hit.Title,
+                Employer = new Employer
+                {
+                    Name = hit.Employer.Name
+                },
+                Description = new Description
+                {
+                    Text = hit.Description.Text
+                },
+                Address = new Address
+                {
+                    City = hit.Address.City,
+                },
+                Details = new ApplicationDetails
+                {
+                    Url = hit.Details.Url
+                },
+                Category = hit.Category,
+                JobType = hit.JobType
+            };
+            
+        }
     }
 }
