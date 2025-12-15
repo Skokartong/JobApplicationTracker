@@ -145,19 +145,33 @@ namespace JobApplicationTracker.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Search(string searchTerm, string location, bool experienceNotRequired = false)
+        public async Task<IActionResult> Search(string searchTerm, string location, bool experienceNotRequired = false, string sorting = "relevance")
         {
             IEnumerable<JobListing> jobListings = Enumerable.Empty<JobListing>();
 
-            if (!string.IsNullOrWhiteSpace(searchTerm) || !string.IsNullOrWhiteSpace(location))
+            if (!string.IsNullOrWhiteSpace(searchTerm) || !string.IsNullOrWhiteSpace(location) || experienceNotRequired || sorting != "relevance")
             {                
-                jobListings = await _jobService.GetJobListingsAsync(searchTerm, location, experienceNotRequired)
+                jobListings = await _jobService.GetJobListingsAsync(searchTerm, location, experienceNotRequired, sorting)
                             ?? Enumerable.Empty<JobListing>();
             }
+
+            var sortingOptions = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "relevance", Text = "Relevance" },
+                new SelectListItem { Value = "pubdate-desc", Text = "Newest First" },
+                new SelectListItem { Value = "pubdate-asc", Text = "Oldest First" },
+                new SelectListItem { Value = "applydate-desc", Text = "Newest Apply Date" },
+                new SelectListItem { Value = "applydate-asc", Text = "Oldest Apply Date" },
+                new SelectListItem { Value = "updated", Text = "Recently Updated" }
+            };
+
+            var selectedOption = sortingOptions.FirstOrDefault(o => o.Value == sorting);
+            selectedOption?.Selected = true;
 
             ViewBag.SearchTerm = searchTerm;
             ViewBag.Location = location;
             ViewBag.ExperienceNotRequired = experienceNotRequired;
+            ViewBag.SortingOptions = sortingOptions;
 
             return View(jobListings);
         }

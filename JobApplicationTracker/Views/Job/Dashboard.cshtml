@@ -1,16 +1,24 @@
 ﻿@model IEnumerable<JobApplicationTracker.Models.JobApplication>
 
 @{
-    var successMessage = TempData["SuccessMessage"] as string;
+	var successMessage = TempData["SuccessMessage"] as string;
 }
 
 @if (!string.IsNullOrEmpty(successMessage))
 {
-    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-        @successMessage
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+	<div class="toast-container position-fixed top-0 end-0 p-3">
+		<div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header">
+				<strong class="me-auto">Success</strong>
+				<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body">
+				@successMessage
+			</div>
+		</div>
+	</div>
 }
+
 
 @{
 	ViewData["Title"] = "Job Applications";
@@ -110,9 +118,9 @@
 						<td class="d-none d-md-table-cell">@application.JobCategory</td>
 						<td
 							class="@(application.Status == JobApplicationTracker.Models.Enums.ApplicationStatus.Applied ? "bg-primary text-white" :
-								   	  application.Status == JobApplicationTracker.Models.Enums.ApplicationStatus.Interview ? "bg-warning text-white" :
-									  application.Status == JobApplicationTracker.Models.Enums.ApplicationStatus.Offer ? "bg-success text-white" :
-									  application.Status == JobApplicationTracker.Models.Enums.ApplicationStatus.Rejected ? "bg-danger text-white" : "")">
+											 	  application.Status == JobApplicationTracker.Models.Enums.ApplicationStatus.Interview ? "bg-warning text-white" :
+										  	  application.Status == JobApplicationTracker.Models.Enums.ApplicationStatus.Offer ? "bg-success text-white" :
+										  	  application.Status == JobApplicationTracker.Models.Enums.ApplicationStatus.Rejected ? "bg-danger text-white" : "")">
 							@application.Status
 						</td>
 						<td class="d-none d-md-table-cell">@application.Type</td>
@@ -151,5 +159,12 @@
 				rows.forEach(r => tableBody.appendChild(r));
 			});
 		});
+
+		$(document).ready(function () {
+			setTimeout(function () {
+				$('.toast').toast('hide');
+			}, 3000);
+		});
 	</script>
+	}
 }
