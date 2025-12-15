@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using JobApplicationTracker.Models;
 
 namespace JobApplicationTracker.Service;
