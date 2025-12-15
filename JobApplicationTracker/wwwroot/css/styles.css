@@ -65,6 +65,12 @@ span{
   line-height: 60px;
 }
 
+.chevron {
+  transition: .3s ease;
+  font-size: 4rem;
+  cursor: pointer;
+}
 
-
-
+.rotated {
+    transform: rotate(180deg);
+}

@@ -47,9 +47,34 @@
                     <li class="mb-4">
                         <div class="card shadow-sm border-light rounded-8">
                             <div class="card-body">
-                                <h4 class="card-title">@job.Title</h4>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="card-title">@job.Title</h4>
+                                    @if (job.Description.Text.Length > 300)
+                                    {
+                                        @* <p class="card-text" id="expand-desc-@job.Id">
+                                            <button class="btn btn-light p-0 chevron" onclick="toggleDesc('@job.Id')">›</button>
+                                        </p>
+                                        <p class="card-text" id="collapse-desc-@job.Id" style="display:none;">
+                                            <button class="btn btn-light p-0 chevron rotated" onclick="toggleDesc('@job.Id')">›</button>
+                                        </p> *@
+                                        <span class="chevron" id="toggle-btn-@job.Id" onclick="toggleDesc('@job.Id')">🢓</span>
+                                    }
+                                </div>
                                 <p class="card-text"><strong>@job.Employer.Name</strong></p>
-                                <p class="card-text">@job.Description.Text</p>
+                                @* <p class="card-text">@job.Description.Text</p> *@
+                                @if (job.Description.Text.Length > 300)
+                                {
+                                    <p class="card-text" id="desc-@job.Id">
+                                        @job.Description.Text.Substring(0, 300)...
+                                    </p>
+                                    <p class="card-text" id="full-desc-@job.Id" style="display:none;">
+                                        @job.Description.Text
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p class="card-text">@job.Description.Text</p>
+                                }
                                 <div class="d-flex flex-row gap-2 mt-3">
                                 <a href="@job.Details.Url" target="_blank"
                                     class="btn btn-info btn-md rounded-pill px-5 mt-3">Apply</a>
@@ -73,3 +98,5 @@
 
     </div>
 </div>
+
+@section Scripts {}
