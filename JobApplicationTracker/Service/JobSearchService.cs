@@ -18,7 +18,7 @@ namespace JobApplicationTracker.Service
             _client = client;
         }
 
-        public async Task<IEnumerable<JobListing>> GetJobListingsAsync(string searchTerm, string location)
+        public async Task<IEnumerable<JobListing>> GetJobListingsAsync(string searchTerm, string location, bool experienceNotRequired = false)
         {
             var url = "https://jobsearch.api.jobtechdev.se/search?";
 
@@ -32,7 +32,16 @@ namespace JobApplicationTracker.Service
                 url += $"location={Uri.EscapeDataString(location)}&";
             }
 
+            if (experienceNotRequired)
+            {
+                url += "experience=false&";
+            }
+
             url += "limit=50";
+
+            System.Console.WriteLine("\n\n=============================");
+            System.Console.WriteLine(url);
+            System.Console.WriteLine("\n\n=============================");
 
             var response = await _client.GetAsync(url);
             var content = await response.Content.ReadAsStringAsync();

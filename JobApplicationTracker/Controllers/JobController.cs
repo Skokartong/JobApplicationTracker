@@ -145,18 +145,19 @@ namespace JobApplicationTracker.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Search(string searchTerm, string location)
+        public async Task<IActionResult> Search(string searchTerm, string location, bool experienceNotRequired = false)
         {
             IEnumerable<JobListing> jobListings = Enumerable.Empty<JobListing>();
 
             if (!string.IsNullOrWhiteSpace(searchTerm) || !string.IsNullOrWhiteSpace(location))
-            {
-                jobListings = await _jobService.GetJobListingsAsync(searchTerm, location)
-                              ?? Enumerable.Empty<JobListing>();
+            {                
+                jobListings = await _jobService.GetJobListingsAsync(searchTerm, location, experienceNotRequired)
+                            ?? Enumerable.Empty<JobListing>();
             }
 
             ViewBag.SearchTerm = searchTerm;
             ViewBag.Location = location;
+            ViewBag.ExperienceNotRequired = experienceNotRequired;
 
             return View(jobListings);
         }

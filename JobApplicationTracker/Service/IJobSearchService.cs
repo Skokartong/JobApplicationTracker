@@ -5,6 +5,6 @@ namespace JobApplicationTracker.Service;
 
 public interface IJobSearchService
 {
-    Task<IEnumerable<JobListing>> GetJobListingsAsync(string searchTerm, string location);
+    Task<IEnumerable<JobListing>> GetJobListingsAsync(string searchTerm, string location, bool experienceNotRequired = false);
     Task<JobListing?> GetJobListingByIdAsync(string id);
 }

@@ -74,3 +74,8 @@ span{
 .rotated {
     transform: rotate(180deg);
 }
+
+.form-check-input:checked {
+  background-color: rgb(243, 178, 56);
+  border-color: rgb(243, 178, 56);
+}
