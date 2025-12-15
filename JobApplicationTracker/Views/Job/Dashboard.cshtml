@@ -93,11 +93,11 @@
 				<tr>
 					<th>Company</th>
 					<th>Title</th>
-					<th>Category</th>
+					<th class="d-none d-md-table-cell">Category</th>
 					<th>Status</th>
-					<th>Type</th>
-					<th>Level</th>
-					<th>Applied Date</th>
+					<th class="d-none d-md-table-cell">Type</th>
+					<th class="d-none d-md-table-cell">Level</th>
+					<th class="d-none d-md-table-cell">Applied Date</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
@@ -107,7 +107,7 @@
 					<tr data-status="@application.Status">
 						<td>@application.Company</td>
 						<td>@application.Title</td>
-						<td>@application.JobCategory</td>
+						<td class="d-none d-md-table-cell">@application.JobCategory</td>
 						<td
 							class="@(application.Status == JobApplicationTracker.Models.Enums.ApplicationStatus.Applied ? "bg-primary text-white" :
 								   	  application.Status == JobApplicationTracker.Models.Enums.ApplicationStatus.Interview ? "bg-warning text-white" :
@@ -115,9 +115,9 @@
 									  application.Status == JobApplicationTracker.Models.Enums.ApplicationStatus.Rejected ? "bg-danger text-white" : "")">
 							@application.Status
 						</td>
-						<td>@application.Type</td>
-						<td>@application.Level</td>
-						<td>@application.AppliedDate.ToShortDateString()</td>
+						<td class="d-none d-md-table-cell">@application.Type</td>
+						<td class="d-none d-md-table-cell">@application.Level</td>
+						<td class="d-none d-md-table-cell">@application.AppliedDate.ToShortDateString()</td>
 						<td>
 							<a asp-action="Update" asp-route-id="@application.Id"
 								class="btn btn-warning btn-sm rounded-pill">Edit</a>
