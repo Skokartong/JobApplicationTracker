@@ -141,6 +141,8 @@ namespace JobApplicationTracker.Controllers
             _context.JobApplications.Remove(job);
             await _context.SaveChangesAsync();
 
+            TempData["SuccessMessage"] = "Application deleted successfully! ✅";
+
             return RedirectToAction(nameof(Dashboard));
         }
 
