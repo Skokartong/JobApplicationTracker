@@ -206,6 +206,8 @@ namespace JobApplicationTracker.Controllers
             _context.JobApplications.Add(jobApplication);
             await _context.SaveChangesAsync();
 
+            TempData["SuccessMessage"] = "Application added successfully! ✅";
+
             return RedirectToAction(nameof(Dashboard));
         }
 
